@@ -1,0 +1,32 @@
+{
+  "name": "",
+  "appid": "",
+  "description": "",
+  "versionName": "1.0.0",
+  "versionCode": "100",
+  "transformPx": false,
+  "mp-weixin": {
+    "appid": "wxb0209817646900f9",
+    "setting": {
+      "urlCheck": false,
+      "es6": true,
+      "minified": true,
+      "postcss": true
+    },
+    "usingComponents": true,
+    "darkmode": false,
+    "themeLocation": "theme.json",
+    "__usePrivacyCheck__": true
+  },
+  "uniStatistics": {
+    "enable": false
+  },
+  "vueVersion": "3",
+  "app-plus": {
+    "safearea": {
+      "bottom": {
+        "offset": "none"
+      }
+    }
+  }
+}

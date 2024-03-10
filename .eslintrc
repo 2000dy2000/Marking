@@ -1,0 +1,20 @@
+{
+  "extends": [
+    "@antfu"
+  ],
+  "rules": {
+    // your overrides
+    "vue/html-self-closing": "off",
+    "vue/component-name-in-template-casing": "off",
+    "no-console": "off",
+    "comma-dangle": "off",
+    "ban-ts-comment": "off",
+    "@typescript-eslint/ban-ts-comment": "warn"
+  },
+  "globals": {
+    "u--form": true,
+    "Form": true,
+    "Input": true,
+    "u--input": true
+  }
+}

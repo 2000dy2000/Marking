@@ -1,0 +1,22 @@
+{
+  "dark": {
+    "bgColor": "#ffffff",
+    "bgColorBottom": "#ffffff",
+    "bgColorTop": "#ffffff",
+    "bgTxtStyle": "dark",
+    "navBgColor": "#ffffff",
+    "navTxtStyle": "black",
+    "tabBgColor": "#ffffff",
+    "tabBorderStyle": "black"
+  },
+  "light": {
+    "bgColor": "#ffffff",
+    "bgColorBottom": "#ffffff",
+    "bgColorTop": "#ffffff",
+    "bgTxtStyle": "dark",
+    "navBgColor": "#ffffff",
+    "navTxtStyle": "black",
+    "tabBgColor": "#ffffff",
+    "tabBorderStyle": "black"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "darkmode": false,
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^u-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+      "^U(.*)": "~/components/UnoUI/U$1/U$1.vue"
+    }
+  },
+  "globalStyle": {
+    "backgroundColor": "@bgColor",
+    "backgroundColorBottom": "@bgColorBottom",
+    "backgroundColorTop": "@bgColorTop",
+    "backgroundTextStyle": "@bgTxtStyle",
+    "navigationBarTitleText": "数据标注系统",
+    "navigationStyle": "custom",
+    "navigationBarBackgroundColor": "@navBgColor",
+    "navigationBarTextStyle": "@navTxtStyle"
+  },
+  "pages": [
+    {
+      "path": "pages/index/index"
+    },
+    {
+      "path": "pages/user/user"
+    },
+    {
+      "path": "pages/answer/answer"
+    }
+  ],
+  "tabBar": {
+    "fontSize": "14px",
+    "selectedColor": "#1296db",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "答题",
+        "iconPath": "static/tabbar/warehouse.png",
+        "selectedIconPath": "static/tabbar/warehouse-selected.png"
+      },
+      {
+        "pagePath": "pages/user/user",
+        "text": "我的",
+        "iconPath": "static/tabbar/user.png",
+        "selectedIconPath": "static/tabbar/user-selected.png"
+      }
+    ]
+  }
+}

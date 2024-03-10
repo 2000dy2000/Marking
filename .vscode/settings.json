@@ -1,0 +1,34 @@
+{
+  "cSpell.words": [
+    "antfu",
+    "Changable",
+    "dcloudio",
+    "demi",
+    "iconify",
+    "loadmore",
+    "longpress",
+    "longtap",
+    "miniprogram",
+    "nomore",
+    "Pinia",
+    "postprocess",
+    "SHEERAN",
+    "tabbar",
+    "treeselect",
+    "unocss",
+    "unplugin",
+    "uview",
+    "vite",
+    "weixin"
+  ],
+  "i18n-ally.localesPaths": [],
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/node_modules": false
+  },
+}
