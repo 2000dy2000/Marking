@@ -351,6 +351,13 @@ export const useAppStore = defineStore(
     const isPC = computed(
       () => platform.value === 'mac' || platform.value === 'windows',
     )
+    let userId = ref('0')
+    function setUserId(id) {
+      userId.value = id
+    }
+    function getUserId() {
+      return userId.value
+    }
 
     return {
       darkMode,
@@ -396,6 +403,8 @@ export const useAppStore = defineStore(
       moveStoreInfo,
       saveMoveStoreInfo,
       removeMoveStoreInfo,
+      setUserId,
+      getUserId,
     }
   },
   {
@@ -407,3 +416,4 @@ export const useAppStore = defineStore(
 export function useAppStoreWidthOut() {
   return useAppStore(pinia)
 }
+

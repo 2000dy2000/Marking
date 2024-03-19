@@ -61,7 +61,8 @@
     "uview-plus": "^3.1.31",
     "vue": "<=3.2.37",
     "vue-demi": "^0.13.11",
-    "vue-router": "^4.2.2"
+    "vue-router": "^4.2.2",
+    "vue-touch-events": "^1.0.3"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.27.0",

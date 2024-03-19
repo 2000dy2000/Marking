@@ -26,6 +26,12 @@
     },
     {
       "path": "pages/answer/answer"
+    },
+    {
+      "path": "pages/answer_type2/answer_type2"
+    },
+    {
+      "path": "pages/login/login"
     }
   ],
   "tabBar": {

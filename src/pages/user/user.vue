@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { useAppStore } from '~/stores/app'
 import { toPage } from '~/utils/navigationUtils'
 import OptionComp from '~/components/option/Option.vue'
 
 const { setPageConfig } = usePageStore()
+const { getUserId } = useAppStore()
 const {
   currUserInfo,
   tokenInfo,
@@ -64,7 +66,7 @@ const handleOptionClick = (item) => {
     })
   }
 }
-
+const loginStatus = ref('点我登录')
 const handleClickBg = () => {
   // 显示背景色切换
   uni.showActionSheet({
@@ -92,7 +94,13 @@ const getContent = (content) => {
 const handleNoticePopupClose = () => {
   showNotice.value = false
 }
-
+onShow(async () => {
+  let id = getUserId()
+  let idNumber = parseInt(id, 10);
+  if (idNumber > 0){
+    loginStatus.value = '已登录'
+  }
+})
 const TOP_HEIGHT = 32
 </script>
 
@@ -117,7 +125,7 @@ const TOP_HEIGHT = 32
           暂无公告
         </div>
         <div class="text-sm flex justify-end" pt-2>
-          <span>from 庆园春团队</span>
+          <span>from 众创团队</span>
         </div>
       </div>
     </div>
@@ -164,7 +172,7 @@ const TOP_HEIGHT = 32
           />
         </div>
         <div class="text-lg text-white">
-          点我登录
+          {{ loginStatus }}
         </div>
       </div>
       <div

@@ -7,7 +7,7 @@ export interface User {
   deptName: string
 }
 
-export interface UserRes {
+export interface serRes {
   createBy: number;
   createTime: string;
   updateBy: number | null;

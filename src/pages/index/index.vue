@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { onLoad } from '@dcloudio/uni-app'
+import { useAppStore } from '~/stores/app'
 import { toPage } from '~/utils/navigationUtils'
 const { setPageConfig } = usePageStore()
+const { getUserId } = useAppStore()
 onShow(async () => {
   setPageConfig({
     showNavBar: true,
@@ -8,16 +11,30 @@ onShow(async () => {
     pageTitle: '首页',
   })
 })
+const showButtons1 = ref(true)
+const showButtons2 = ref(false)
 const to_view_answer = () => {
+  console.log(getUserId())
   toPage('answer')
+}
+const to_view_answer2 = () => {
+  toPage('answer_type2')
+}
+const to_view_button = () => {
+  showButtons1.value = false
+  showButtons2.value = true
 }
 </script>
 
 <template>
   <UBasePage>
-    <div class="mainTown">
-      <button class="button button1" @click="to_view_answer">开始答题</button>
+    <div class="mainTown" v-if="showButtons1">
+      <button class="button button1" @click="to_view_button">开始答题</button>
       <button class="button button2">答题记录</button>
+    </div>
+    <div class="mainTown" v-if="showButtons2">
+      <button class="button button1" @click="to_view_answer">类型一</button>
+      <button class="button button2" @click="to_view_answer2">类型二</button>
     </div>
   </UBasePage>
 </template>
