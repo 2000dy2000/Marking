@@ -54,9 +54,9 @@ let questions = ref([
     feedback: '',
     selectedOptions: '',
     time: ''
-  }, {
+  },{
     userId: 1,
-    id: 5,
+    id: 9,
     question: '在网络攻防任务中，对方想要来攻击我而获取设备信息，如何使用代理服务器来隐藏自己的真实身份进行防御',
     answer: false,
     feedback: '',
@@ -64,7 +64,7 @@ let questions = ref([
     time: ''
   },{
     userId: 1,
-    id: 6,
+    id: 9,
     question: '在网络攻防任务中，对方想要来攻击我而获取设备信息，如何使用代理服务器来隐藏自己的真实身份进行防御',
     answer: false,
     feedback: '',
@@ -72,7 +72,7 @@ let questions = ref([
     time: ''
   },{
     userId: 1,
-    id: 7,
+    id: 9,
     question: '在网络攻防任务中，对方想要来攻击我而获取设备信息，如何使用代理服务器来隐藏自己的真实身份进行防御',
     answer: false,
     feedback: '',
@@ -80,7 +80,7 @@ let questions = ref([
     time: ''
   },{
     userId: 1,
-    id: 8,
+    id: 9,
     question: '在网络攻防任务中，对方想要来攻击我而获取设备信息，如何使用代理服务器来隐藏自己的真实身份进行防御',
     answer: false,
     feedback: '',
@@ -113,6 +113,7 @@ let questions = ref([
   }
 ])
 // let questions = ref([])
+let now = 0
 let length = ref(0)
 // 在组件挂载时启动计时器
 onMounted(() => {
@@ -140,7 +141,9 @@ onMounted(() => {
 
 })
 const showButtons = ref(true)
+const show = ref(false)
 const showOptions = ref(false)
+const showTextAres= ref(true)
 const checkboxList1 = reactive([
   {
     name: '政治敏感',
@@ -189,6 +192,7 @@ const handleAnswerClickTrue = () => {
   if (currentIndex.value < 10)
     questions.value[currentIndex.value].answer = true
   if (currentIndex.value < 9)
+    now = 0
     currentIndex.value++
   console.log(questions.value)
 }
@@ -205,20 +209,27 @@ const submit_question = () => {
   showOptions.value = false
   updateQuestionsSelect()
   selectedOptionsString.value = []
-  if (currentIndex.value < 9)
-    currentIndex.value++
-  else
-    back()
+  highlightedText.value = ''
+  highlightedIndex.value = [];
+  console.log(questions.value)
+  // if (currentIndex.value < 9)
+  //   currentIndex.value++
+  // else
+  //   back()
 }
 const last_question = () => {
   showButtons.value = true
   showOptions.value = false
+  highlightedText.value = ''
+  highlightedIndex.value = []
   if (currentIndex.value > 0)
     currentIndex.value--
 }
 const next_question = () => {
   showButtons.value = true
   showOptions.value = false
+  highlightedText.value = ''
+  highlightedIndex.value = []
   if (currentIndex.value < 9)
     currentIndex.value++
 }
@@ -229,17 +240,31 @@ const updateQuestionsTime = () => {
     const hours = Math.floor(timer.value / 3600);
 
     const formattedTime = `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
-    q.time = formattedTime;
-    let id = parseInt(getUserId(), 10);
+    q.time = formattedTime
+    let id = parseInt(getUserId(), 10)
     q.userId = id
   }
 }
 const updateQuestionsSelect = () => {
-  questions.value[currentIndex.value].selectedOptions = selectedOptionsString.value.join(',')
+  if (now < 2) {
+    questions.value[currentIndex.value].selectedOptions += highlightedText.value + ":"
+    questions.value[currentIndex.value].selectedOptions += selectedOptionsString.value.join(',')
+    questions.value[currentIndex.value].selectedOptions += ";"
+    now++
+  }
+  else {
+    uni.showToast({
+      title: '已选两个违规词',
+      icon: 'none',    //如果要纯文本，不要icon，将值设为'none'
+      duration: 3000    //持续时间为 2秒
+    })
+    currentIndex.value++
+    now = 0
+  }
 }
 // 辅助函数，用于确保数字小于10时在前面加0
 function padZero(num) {
-  return num < 10 ? `0${num}` : num.toString();
+  return num < 10 ? `0${num}` : num.toString()
 }
 const submit_final = () => {
   updateQuestionsTime()
@@ -247,6 +272,38 @@ const submit_final = () => {
   console.log(questions.value)
   toTabPage('index')
 }
+const highlightedText = ref('')
+const highlightedIndex = ref<Array<string | number>>([]);
+const highlightButton = (indexes: (number | string)[]) => {
+  highlightedText.value = ''
+  // console.log('highlightedIndex.value before:', highlightedIndex.value);
+  indexes.forEach(index => {
+    const numericIndex = typeof index === 'string' ? parseInt(index, 10) : index;
+    const indexPosition = highlightedIndex.value.indexOf(numericIndex);
+    // console.log('numericIndex:', numericIndex);
+    // console.log('indexPosition:', indexPosition);
+    if (indexPosition === -1) {
+      // 如果项目未高亮，则将其添加到高亮数组中
+      highlightedIndex.value.push(numericIndex);
+    } else {
+      // 如果项目已高亮，则从高亮数组中移除
+      highlightedIndex.value.splice(indexPosition, 1);
+    }
+    for (const index of highlightedIndex.value) {
+      const button = questions.value[currentIndex.value].question[index];
+      highlightedText.value += button;
+    }
+    // console.log('highlightedText:', highlightedText.value);
+  })
+  // console.log('highlightedIndex.value after:', highlightedIndex.value);
+}
+
+const isHighlighted = (charIndex: number | string) => {
+  // 检查当前索引是否在高亮数组中
+  return highlightedIndex.value.includes(charIndex);
+}
+
+
 </script>
 
 <template>
@@ -267,15 +324,27 @@ const submit_final = () => {
         </div>
         <div class="divider"></div> <!-- 添加分割线 -->
         <div class="title">
-          <div class="question_text">{{ questions[currentIndex].question }}</div>
+          <div class="question_text button-container">
+            <button
+              v-for="(char, charIndex) in questions[currentIndex].question"
+              :key="charIndex"
+              @click="highlightButton([charIndex])"
+            :class="{ 'highlighted': isHighlighted(charIndex) }"
+            >
+            {{ char }}
+            </button>
+          </div>
         </div>
         <div class="buttons3">
           <button class="button6" @click="last_question">上一题</button>
           <button class="button7" @click="next_question">下一题</button>
         </div>
         <div v-if="showButtons" class="buttons">
-          <button class="button2" @click="handleAnswerClickFalse">不合规</button>
-          <button class="button3" @click="handleAnswerClickTrue">合规</button>
+          <button class="button2" @click="handleAnswerClickFalse">拒答</button>
+          <button class="button3" @click="handleAnswerClickTrue">非拒答</button>
+        </div>
+        <div v-if="showTextAres" style="margin: 0 5% 0 5%">
+          <u--textarea height="20" v-model="highlightedText" placeholder="选择文本" autoHeight disabled></u--textarea>
         </div>
         <u-checkbox-group
           class="check"
@@ -318,6 +387,29 @@ const submit_final = () => {
 </template>
 
 <style scoped>
+.button-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0px;
+}
+.button-container button {
+  display: flex; /* 使用 flex 布局 */
+  justify-content: center; /* 水平居中文本 */
+  align-items: center; /* 垂直居中文本 */
+  flex-grow: 0;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+}
+.button-container button.highlighted {
+  background-color: rgba(201, 201, 27, 0.5); /* 设置高亮时的背景色，使用透明度实现渐变 */
+  box-shadow: 0 0 10px rgba(199, 191, 43, 0.8); /* 设置按钮的阴影，使其看起来更立体 */
+  border: 0px solid rgba(255, 255, 0, 0.5); /* 设置按钮的边框，与背景色相呼应 */
+  border-radius: 5px; /* 设置按钮的圆角，使其更加柔和 */
+  transition: background-color 1s, box-shadow 1s; /* 添加过渡效果，使按钮的变化更加平滑 */
+}
+
 .mainTown {
   display: flex;
   flex-direction: column;

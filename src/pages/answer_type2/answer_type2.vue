@@ -145,6 +145,9 @@ const handleAnswerClickTrue = () => {
     questions.value[currentIndex.value].isSave = true
   if (currentIndex.value < length - 1)
     currentIndex.value++
+  highlightedText.value = ''
+  highlightedIndex.value = []
+  now = 0
   console.log(questions.value)
 }
 let pressedText = ref('')
@@ -162,12 +165,18 @@ const handleAnswerClickFalse = () => {
 const last_question = () => {
   showTextAres.value = false
   showButtons.value = true
+  highlightedText.value = ''
+  highlightedIndex.value = []
+  now = 0
   if (currentIndex.value > 0)
     currentIndex.value--
 }
 const next_question = () => {
   showTextAres.value = false
   showButtons.value = true
+  highlightedText.value = ''
+  highlightedIndex.value = []
+  now = 0
   if (currentIndex.value < length - 1)
     currentIndex.value++
 }
@@ -194,22 +203,61 @@ const submit_final = () => {
   console.log(questions.value)
   toTabPage('index')
 }
-// 处理长按事件，传入事件对象 event
-const handleLongPress = (item) => {
-  // 通过 event.target.innerText 获取按压到的文本内容
-  // console.log('Pressed Text:', pressedText);
-  console.log(item)
-  // 这里你可以对按压到的文本进行处理或者其他操作
-}
+let now = 0
 const handleSubmit = () => {
   if (currentIndex.value < length)
     questions.value[currentIndex.value].isSave = false
-  questions.value[currentIndex.value].markingchar = pressedText.value
-  if (currentIndex.value < length - 1)
+  if (now < 2) {
+    questions.value[currentIndex.value].markingchar += highlightedText.value
+    questions.value[currentIndex.value].markingchar += ";"
+    now++
+  }
+  else {
+    uni.showToast({
+      title: '已选两个违规词',
+      icon: 'none',    //如果要纯文本，不要icon，将值设为'none'
+      duration: 3000    //持续时间为 2秒
+    })
     currentIndex.value++
+    now = 0
+  }
+  highlightedText.value = ''
+  highlightedIndex.value = []
   showTextAres.value = false
   showButtons.value = true
+
 }
+const highlightedText = ref('')
+const highlightedIndex = ref<Array<string | number>>([]);
+const highlightButton = (indexes: (number | string)[]) => {
+  highlightedText.value = ''
+  // console.log('highlightedIndex.value before:', highlightedIndex.value);
+  indexes.forEach(index => {
+    const numericIndex = typeof index === 'string' ? parseInt(index, 10) : index;
+    const indexPosition = highlightedIndex.value.indexOf(numericIndex);
+    // console.log('numericIndex:', numericIndex);
+    // console.log('indexPosition:', indexPosition);
+    if (indexPosition === -1) {
+      // 如果项目未高亮，则将其添加到高亮数组中
+      highlightedIndex.value.push(numericIndex);
+    } else {
+      // 如果项目已高亮，则从高亮数组中移除
+      highlightedIndex.value.splice(indexPosition, 1);
+    }
+    for (const index of highlightedIndex.value) {
+      const button = questions.value[currentIndex.value].question[index];
+      highlightedText.value += button;
+    }
+    // console.log('highlightedText:', highlightedText.value);
+  })
+  // console.log('highlightedIndex.value after:', highlightedIndex.value);
+}
+
+const isHighlighted = (charIndex: number | string) => {
+  // 检查当前索引是否在高亮数组中
+  return highlightedIndex.value.includes(charIndex);
+}
+
 </script>
 
 <template>
@@ -230,21 +278,31 @@ const handleSubmit = () => {
         </div>
         <div class="divider"></div> <!-- 添加分割线 -->
         <div class="title">
-          <div class="question_text" @touchstart="handleLongPress(questions[currentIndex].question)">{{ questions[currentIndex].question }}</div>
+          <div class="question_text button-container">
+            <button
+              v-for="(char, charIndex) in questions[currentIndex].question"
+              :key="charIndex"
+              @click="highlightButton([charIndex])"
+              :class="{ 'highlighted': isHighlighted(charIndex) }"
+            >
+              {{ char }}
+            </button>
+          </div>
         </div>
         <div class="buttons3">
           <button class="button6" @click="last_question">上一题</button>
           <button class="button7" @click="next_question">下一题</button>
         </div>
         <div class="tip-container" v-if="showTextAres">
-          <div class="tip">违规词用空格分隔开</div>
+          <div class="tip">选择违规词</div>
         </div>
         <div v-if="showButtons" class="buttons">
           <button class="button2" @click="handleAnswerClickTrue">安全</button>
           <button class="button3" @click="handleAnswerClickFalse">不安全</button>
+          <button class="button3" @click="handleAnswerClickFalse">不确定</button>
         </div>
         <div v-if="showTextAres" class="buttons2">
-          <u--textarea height="150" v-model="pressedText" placeholder="请输入内容" ></u--textarea>
+          <u--textarea height="150" v-model="highlightedText" placeholder="请选择内容" autoHeight disabled></u--textarea>
           <button class="button3" @click="handleSubmit">提交</button>
         </div>
       </div>
@@ -253,6 +311,28 @@ const handleSubmit = () => {
 </template>
 
 <style scoped>
+.button-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0px;
+}
+.button-container button {
+  display: flex; /* 使用 flex 布局 */
+  justify-content: center; /* 水平居中文本 */
+  align-items: center; /* 垂直居中文本 */
+  flex-grow: 0;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+}
+.button-container button.highlighted {
+  background-color: rgba(201, 201, 27, 0.5); /* 设置高亮时的背景色，使用透明度实现渐变 */
+  box-shadow: 0 0 10px rgba(199, 191, 43, 0.8); /* 设置按钮的阴影，使其看起来更立体 */
+  border: 0px solid rgba(255, 255, 0, 0.5); /* 设置按钮的边框，与背景色相呼应 */
+  border-radius: 5px; /* 设置按钮的圆角，使其更加柔和 */
+  transition: background-color 1s, box-shadow 1s; /* 添加过渡效果，使按钮的变化更加平滑 */
+}
 .mainTown {
   display: flex;
   flex-direction: column;
